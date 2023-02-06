@@ -1,7 +1,7 @@
 const express = require('express');
 const fs = require('fs/promises');
 
-const talkerPathRead = require('./utils/fsUtils');
+const { talkerPathRead, talkerPathWrite } = require('./utils/fsUtils');
 const generateToken = require('./utils/generateToken');
 const validateEmail = require('./middleware/validateEmail');
 const validatePassword = require('./middleware/validatePassword');
@@ -75,12 +75,33 @@ validateRate,
 async (req, res) => {
     const talker = await talkerPathRead();
     const newTalker = {
-      id: talker.lenght + 1,
+      id: talker.length + 1,
       ...req.body,
     };
     const allTalker = [...talker, newTalker];
-    await fs.writeFile(talkerPathRead(), JSON.stringify(allTalker));
-    res.status(201).json(allTalker);
+    await talkerPathWrite(allTalker);
+    res.status(201).json(newTalker);
 });
+
+app.put('/talker/:id', 
+auth, 
+validateName,
+validateAge,
+validateTalk,
+validateWatchedAt, 
+validateRate,
+async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, age, talk: watchedAt, rate } = req.body;
+    const talker = await talkerPathRead();
+    const index = talker.findIndex((element) => element.id === Number(id));
+    talker[index] = { id: Number(id), name, age, talk: watchedAt, rate };
+    const updatedTalker = JSON.stringify(talker, null, 2);
+    await fs.writeFile(talkerPathRead(), updatedTalker);
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
+  });
 
 module.exports = app;

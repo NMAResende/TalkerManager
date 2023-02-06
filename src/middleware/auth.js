@@ -1,4 +1,4 @@
-const auth = (req, res, _next) => {
+const auth = (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization) {
@@ -7,6 +7,8 @@ const auth = (req, res, _next) => {
   if (authorization.length !== 16) {
     return res.status(401).json({ message: 'Token inválido' });
   }
+
+  return next();
 };
 
 module.exports = auth;

@@ -10,4 +10,17 @@ const talkerPathRead = async () => {
   }
 };
 
-module.exports = talkerPathRead;
+const talkerPathWrite = async (file) => {
+  try {
+    const write = await fs
+    .writeFile(path.resolve(__dirname, '../talker.json'), JSON.stringify(file));
+    return write;
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+
+module.exports = {
+  talkerPathRead,
+  talkerPathWrite,
+};

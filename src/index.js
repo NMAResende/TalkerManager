@@ -1,5 +1,4 @@
 const express = require('express');
-const fs = require('fs/promises');
 
 const { talkerPathRead, talkerPathWrite } = require('./utils/fsUtils');
 const generateToken = require('./utils/generateToken');

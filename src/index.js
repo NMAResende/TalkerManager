@@ -73,23 +73,14 @@ validateTalk,
 validateWatchedAt, 
 validateRate,
 async (req, res) => {
-  try {
-    const { name, age, talk: watchedAt, rate } = req.body;
     const talker = await talkerPathRead();
     const newTalker = {
       id: talker.lenght + 1,
-      name,
-      age, 
-      talk:
-       watchedAt,
-       rate,
+      ...req.body,
     };
     const allTalker = [...talker, newTalker];
     await fs.writeFile(talkerPathRead(), JSON.stringify(allTalker));
-    res.status(201).json(newTalker);
-  } catch (err) {
-      res.status(500).send({ message: err.message });
-    }
+    res.status(201).json(allTalker);
 });
 
 module.exports = app;

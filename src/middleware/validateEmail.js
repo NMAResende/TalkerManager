@@ -1,4 +1,4 @@
-const validateEmail = async (req, res, next) => {
+const validateEmail = (req, res, next) => {
   const { email } = req.body;
   const regex = /\S+@\S+\.\S+/;
   const valideEmail = regex.test(email);

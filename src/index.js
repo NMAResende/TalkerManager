@@ -93,12 +93,12 @@ validateRate,
 async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, age, talk: watchedAt, rate } = req.body;
     const talker = await talkerPathRead();
     const index = talker.findIndex((element) => element.id === Number(id));
-    talker[index] = { id: Number(id), name, age, talk: watchedAt, rate };
-    const updatedTalker = JSON.stringify(talker, null, 2);
-    await fs.writeFile(talkerPathRead(), updatedTalker);
+    talker[index] = { id: Number(id), ...req.body };
+    await talkerPathWrite(talker);
+    const findTalker = talker.find((element) => element.id === Number(id)); 
+    res.status(200).json(findTalker);
   } catch (err) {
     res.status(500).send({ message: err.message });
   }

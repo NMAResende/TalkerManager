@@ -1,6 +1,7 @@
 const express = require('express');
 const talkerPathRead = require('./utils/fsUtils');
 const generateToken = require('./utils/generateToken');
+const validateLogin = require('./middleware/validateLogin');
 
 const app = express();
 app.use(express.json());
@@ -46,7 +47,7 @@ app.get('/talker/:id', async (req, res) => {
   }
 });
 
-app.post('/login', async (req, res) => {
+app.post('/login', validateLogin, async (_req, res) => {
   try {
     const token = generateToken();
     return res.status(200).json({ token });

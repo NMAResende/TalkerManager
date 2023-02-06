@@ -1,14 +1,9 @@
 const express = require('express');
-const fs = require('fs/promises');
-const path = require('path');
+const talkerPathRead = require('./utils/fsUtils');
+const generateToken = require('./utils/generateToken');
 
 const app = express();
 app.use(express.json());
-
-const talkerPath = async () => {
-  const readFile = await fs.readFile(path.resolve(__dirname, 'talker.json'), 'utf8');
-  return JSON.parse(readFile);
-};
 
 const HTTP_OK_STATUS = 200;
 const HTTP_ERROR_STATUS = 500;
@@ -25,7 +20,7 @@ app.listen(PORT, () => {
 
 app.get('/talker', async (_req, res) => {
   try {
-    const talker = await talkerPath();
+    const talker = await talkerPathRead();
     res.status(HTTP_OK_STATUS).json(talker);
 
     if (!talker) {
@@ -39,7 +34,7 @@ app.get('/talker', async (_req, res) => {
 app.get('/talker/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const talker = await talkerPath();
+    const talker = await talkerPathRead();
     const talkerId = talker.find((e) => e.id === Number(id));
 
     if (!talkerId) {
@@ -49,6 +44,15 @@ app.get('/talker/:id', async (req, res) => {
   } catch (err) {
     res.status(HTTP_ERROR_STATUS).json({ message: err.message });
   }
+});
+
+app.post('/login', async (req, res) => {
+  try {
+    const token = generateToken();
+    return res.status(200).json({ token });
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }  
 });
 
 module.exports = app;

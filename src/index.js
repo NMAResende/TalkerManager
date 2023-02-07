@@ -103,4 +103,16 @@ async (req, res) => {
   }
   });
 
+  app.delete('/talker/:id', auth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const talker = await talkerPathRead();
+      const filterTalker = talker.filter((el) => el.id === Number(id));
+      await talkerPathWrite({ filterTalker });
+      res.status(204).end();
+    } catch (err) {
+      res.status(500).send({ message: err.message });
+    }
+  });
+
 module.exports = app;

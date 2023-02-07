@@ -27,6 +27,25 @@ app.listen(PORT, () => {
   console.log('Online');
 });
 
+app.get('/talker/search', 
+auth, 
+async (req, res) => {
+  try {
+    const { q } = req.query;
+    const talker = await talkerPathRead();
+    const filter = talker
+    .filter((el) => el.name.toLowerCase().includes(q.toLowerCase()));
+    console.log(filter);
+    if (!q) {
+      return res.status(200).json(talker);
+    }
+
+    res.status(200).json(filter);
+  } catch (err) {
+    res.status(500).json({ messagem: err.message });
+  }
+});
+
 app.get('/talker', async (_req, res) => {
   try {
     const talker = await talkerPathRead();
